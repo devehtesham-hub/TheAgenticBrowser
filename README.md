@@ -12,68 +12,65 @@
 
 ## Overview
 
-Agentic Browser is an agent-based system designed to automate browser interactions using a natural language interface. Built upon the [PydanticAI Python agent framework](https://github.com/pydantic/pydantic-ai), Agentic Browser allows users to automate tasks such as form filling, product searches on e-commerce platforms, content retrieval, media interaction, and project management on various platforms. 
+Agentic Browser is an agent-driven system that lets you control a browser using plain English. Built on the [PydanticAI Python agent framework](https://github.com/pydantic/pydantic-ai), it handles everything from filling out forms and searching e-commerce sites to pulling content, interacting with media, and managing projects across different platforms — all without writing a single line of automation code.
 
 ## Features
 
 ### Browser Automation
 
-- **Web Research and Analysis**: Intelligent web research across academic papers, travel sites & code repositories with natural language queries.
-- **Data Extraction**: Extracts and compiles data of various types such as sports data, historical data, stock market and currencies.
-- **E-commerce Information**: Scrapes information like price, specifications, availaibility of a product on various e-commerce websites.
-- **Web Traversal**: Smart cross-domain navigation with context-aware website traversal & data correlation.
+- **Web Research and Analysis**: Runs intelligent research across academic papers, travel sites, and code repositories using natural language queries.
+- **Data Extraction**: Collects and compiles structured data — sports stats, historical records, stock prices, currency rates, and more.
+- **E-commerce Information**: Scrapes product details like pricing, specifications, and availability across major e-commerce platforms.
+- **Web Traversal**: Navigates across domains with context-aware logic, correlating data as it moves between sites.
 
 ## Architecture
 
 ![Agentic Browser](ta_browser_workflow.png)
 
-Agentic Browser uses three specialized agents working in harmony:
+Three specialized agents work together to handle every task:
 
-- **Planner Agent**: The strategist that breaks down user requests into clear, executable steps. It creates and adapts plans based on feedback and progress.
+- **Planner Agent**: The strategist. It breaks your request into clear, executable steps and adapts the plan as things progress.
 
-- **Browser Agent**: The executor that directly interacts with web pages. It performs actions like clicking, typing, navigating, and extracting information using browser automation tools.
+- **Browser Agent**: The executor. It directly interacts with web pages — clicking, typing, navigating, and extracting information using browser automation tools.
 
-- **Critique Agent**: The quality controller that analyzes actions, verifies results, and guides the workflow. It determines if tasks are complete or need refinement.
+- **Critique Agent**: The quality controller. It reviews what happened, checks the results, and decides whether the task is done or needs another pass.
 
-The agents work in a feedback loop to ensure that actions are taken correctly and tasks are completed effectively.
+Together, they run a continuous feedback loop until the task is complete.
 
 ## Agents Workflow
 
 ### Step 1: Planning Phase
 
-- The **Planner Agent** receives a user request
-- Analyzes the task requirements
-- Creates a step-by-step execution plan
-- Determines the first action to take
+- The **Planner Agent** receives your request
+- Breaks down what needs to happen
+- Produces a step-by-step execution plan
+- Identifies the first action to take
 
 ### Step 2: Execution Phase
 
-- The **Browser Agent** receives the current step
-- Executes precise browser actions (navigation, clicks, text entry)
-- Uses tools like DOM inspection and screenshot analysis
-- Reports action results
+- The **Browser Agent** picks up the current step
+- Carries out precise browser actions — navigation, clicks, text entry
+- Uses DOM inspection and screenshot analysis as needed
+- Reports back with results
 
 ### Step 3: Evaluation Phase
 
-- The **Critique Agent** reviews the execution
-- Analyzes screenshots and DOM changes
-- Verifies if the step was successful
-- Decides whether to:
-  - Complete the task and return results to user
-  - Continue to next step in plan
-  - Request plan modification from Planner Agent
+- The **Critique Agent** reviews what the Browser Agent did
+- Checks screenshots and DOM changes to verify success
+- Decides the next move:
+  - Return results to the user if the task is done
+  - Move on to the next step in the plan
+  - Ask the Planner Agent to revise the plan if something went wrong
 
-This cycle continues until the task is successfully completed or a terminal condition is reached.
+This loop continues until the task completes or a terminal condition is hit.
 
 ## Quick Start
 
 ### Setup
 
-To get started with Agentic Browser, follow the steps below to install dependencies and configure your environment.
-
 #### 1. Install `uv`
 
-Agentic Browser uses `uv` to manage the Python virtual environment and package dependencies.
+Agentic Browser uses `uv` to manage the Python virtual environment and dependencies.
 
 - macOS/Linux:
 
@@ -87,15 +84,13 @@ Agentic Browser uses `uv` to manage the Python virtual environment and package d
   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
 
-  You can install uv using pip
+  You can also install uv via pip.
 
-#### 2. Clone the repository:
+#### 2. Clone the repository
 
     git clone https://github.com/TheAgenticAI/TheAgenticBrowser
-    
-#### 3. Set up the virtual environment
 
-Use uv to create and activate a virtual environment for the project.
+#### 3. Set up the virtual environment
 
     uv venv --python=3.11
     source .venv/bin/activate
@@ -109,15 +104,15 @@ Use uv to create and activate a virtual environment for the project.
 
     playwright install
 
-If you want to use your local Chrome browser over Playwright, go to chrome://version/ in Chrome, find the path to your profile, and set BROWSER_STORAGE_DIR to that path in .env
+To use your local Chrome browser instead of Playwright, open `chrome://version/` in Chrome, copy the path to your profile, and set `BROWSER_STORAGE_DIR` to that path in `.env`.
 
 #### 6. Configure the environment
 
-Create a .env file by copying the provided example file.
+Copy the example env file and fill in your values:
 
     cp .env.example .env
 
-Edit the .env file and set the following variables:
+Edit `.env` and set the following:
 
     # AGENTIC_BROWSER Configuration
     AGENTIC_BROWSER_TEXT_MODEL=<text model name eg. "gpt-4o">
@@ -141,22 +136,21 @@ Edit the .env file and set the following variables:
     BROWSER_STORAGE_DIR=<path to browser storage directory eg. "./browser_storage">
     STEEL_DEV_API_KEY=<Optional: Enable remote browser via Steel Dev CDP, (Only useful when launched as an API, see Step 7>
 
-#### 7. Running the project
+#### 7. Run the project
 
-You can directly run the project from the main.py file or even spin up a server to interact through an API
+Run directly from `main.py` or spin up an API server:
 
-- Direct
+- Direct:
   ```bash
   python3 -m core.main
   ```
-- API
 
+- API:
   ```bash
   uvicorn core.server.api_routes:app --loop asyncio
   ```
 
-  Details -
-
+  Example request:
   ```
   POST http://127.0.0.1:8000/execute_task
 
@@ -165,24 +159,20 @@ You can directly run the project from the main.py file or even spin up a server 
   }
   ```
 
-### Running API with Docker (for AgenticBench)
+### Running the API with Docker (for AgenticBench)
 
-#### For Ubuntu/Windows :
+#### Ubuntu / Windows
 
 ```bash
-
 docker build -t agentic_browser .
 docker run -it --net=host --env-file .env agentic_browser
-
 ```
 
-#### For macOS :
+#### macOS
 
 ```bash
-
 docker build -t agentic_browser .
 docker run -it -p 8000:8000 --env-file .env agentic_browser
-
 ```
 
 ## Acknowledgements
