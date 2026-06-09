@@ -14,6 +14,7 @@ from core.skills.get_url import geturl
 from core.skills.open_url import openurl
 from core.skills.pdf_text_extractor import extract_text_from_pdf
 from core.skills.google_search import google_search
+from core.skills.tavily_search import tavily_search
 from core.skills.press_key_combination import press_key_combination
 from core.skills.click_using_selector import click
 
@@ -51,9 +52,10 @@ BA_SYS_PROMPT = """
     </general_rules>
 
     <search_rules>
-        1. For browsing the web you can use the google_search_tool function which performs the search as an API Call.
+        1. For browsing the web you can use either google_search_tool or tavily_search_tool to perform a web search as an API call.
+         Use whichever is available based on the configured search provider. Both return formatted results with titles, URLs, and snippets.
          Keep the search results in mind as it can be used to hop to different websites in future steps. To navigate to
-         a website using this tool you need to use the open_url_tool with a URL from google_search.
+         a website using these tools you need to use the open_url_tool with a URL from the search results.
         2. Strictly for search fields, submit the field by pressing Enter key. For other forms, click on the submit button.
     </search_rules>
 
@@ -101,7 +103,19 @@ BA_SYS_PROMPT = """
             - num: The number of search results to return (default is 10, max is 10).
         </parameters>
 
-    
+        1b.
+        tavily_search_tool(query: str, max_results: int = 10) -> str:
+        <description>
+            Performs a web search using the Tavily API and returns formatted results.
+            Use this as an alternative to google_search_tool when Tavily is the configured search provider.
+        </description>
+
+        <parameters>
+            - query: The search query string.
+            - max_results: The number of search results to return (default is 10).
+        </parameters>
+
+
         2.
         enter_text_tool(entry) -> str:
         <description>
@@ -245,6 +259,14 @@ async def google_search_tool(query: str, num: int = 10) -> str:
     Performs a Google search using the query and num parameters.
     """
     return await google_search(query=query, num=num)
+
+@BA_agent.tool_plain
+async def tavily_search_tool(query: str, max_results: int = 10) -> str:
+    """
+    Performs a web search using the Tavily API and returns formatted results.
+    Use this as an alternative to google_search_tool when Tavily is the configured search provider.
+    """
+    return await tavily_search(query=query, max_results=max_results)
 
 @BA_agent.tool_plain
 async def bulk_enter_text_tool(entries) -> str:
